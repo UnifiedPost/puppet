@@ -326,11 +326,18 @@ Puppet::Type.type(:augeas).provide(:augeas) do
   end
 
   def print_errors(errors)
+    debug("Printing errors: #{errors.inspect}")
+    if errors.is_a?(String)
+      debug("#{errnode} = #{errors}")
+    else
     errors.each do |errnode|
+      error = @aug.get(errnode)
+      debug("#{errnode} = #{error}") unless error.nil?
       @aug.match("#{errnode}/*").each do |subnode|
         subvalue = @aug.get(subnode)
         debug("#{subnode} = #{subvalue}")
       end
+    end
     end
   end
 
